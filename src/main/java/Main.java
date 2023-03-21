@@ -15,5 +15,4 @@ public class Main {
         DenialConstraintSet dcs = fastADC.buildApproxDCs(fp, rowLimit);
         System.out.println();
     }
-
 }
