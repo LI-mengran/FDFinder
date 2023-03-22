@@ -18,7 +18,7 @@ public class SingleDiffMapBuilder {
         plis = shard.plis;
         tidBeg = shard.beg;
         tidRange = shard.end - shard.beg;
-        differenceCount = tidRange * tidRange;
+        differenceCount = (tidRange + 1) * tidRange;
         nAttributes = shard.plis.size();
     }
 
@@ -40,9 +40,9 @@ public class SingleDiffMapBuilder {
                     for(int i = 0; i < rawCluster.size() - 1; i++){
                         int t1 = rawCluster.get(i) - tidBeg, r1 = t1 * tidRange;
                         for (int j = i + 1; j < rawCluster.size(); j++) {
-                            int tid2 = rawCluster.get(j) - tidBeg;
-                            differenceValues[r1 + tid2] |= mask;               // (cluster.get(i)-tidBeg)*tidRange + (cluster.get(j)-tidBeg)
-                            differenceValues[tid2 * tidRange + t1] |= mask;    // (cluster.get(j)-tidBeg)*tidRange + (cluster.get(i)-tidBeg)
+                            int t2 = rawCluster.get(j) - tidBeg, r2 = t2 * tidRange;
+                            int pos = Integer.min(r1 + t2,r2 + t1);  // (cluster.get(i)-tidBeg)*tidRange + (cluster.get(j)-tidBeg)
+                            differenceValues[pos] |= mask;                  // (cluster.get(j)-tidBeg)*tidRange + (cluster.get(i)-tidBeg)
                         }
                     }
                 }
