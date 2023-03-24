@@ -5,12 +5,14 @@ import java.util.*;
 
 import com.csvreader.CsvReader;
 import de.metanome.algorithms.dcfinder.helpers.IndexProvider;
+import FD.DataIO.DataIO;
 
 public class Input {
 
     private final String name;
     private final int colCount;
     private final int rowCount;
+    private String[] headers;
 
     private final List<ParsedColumn<?>> parsedColumns;
 
@@ -41,6 +43,10 @@ public class Input {
         System.out.println(" [Input] # of Attributes: " + colCount);
     }
 
+    public String[] getHeaders() {
+        return headers;
+    }
+
     private Column[] readRelationalInputToColumns(RelationalInput relationalInput, int rowLimit) {
         final int columnCount = relationalInput.numberOfColumns();
         Column[] columns = new Column[columnCount];
@@ -50,7 +56,8 @@ public class Input {
         int nLine = 0;
         try {
             CsvReader csvReader = new CsvReader(relationalInput.filePath, ',', StandardCharsets.UTF_8);
-            csvReader.readHeaders();    // skip the header
+            csvReader.readHeaders();
+            headers = csvReader.getHeaders();    // skip the header
             while (csvReader.readRecord()) {
                 String[] line = csvReader.getValues();
                 for (int i = 0; i < columnCount; ++i)

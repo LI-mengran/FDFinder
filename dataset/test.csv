@@ -1,0 +1,3 @@
+ident(String),type(String),name(String),elevation_ft(Integer),continent(String),iso_country(String),iso_region(String),municipality(String),gps_code(String),local_code(String),coordinates(String)
+ZZZZ,small_airport,Glorioso Islands Airstrip,11,AF,TF,TF-U-A,Grande Glorieuse,,,"-11.584277777799999, 47.296388888900005"
+ZZZZ,small_airport,Satsuma I艒jima Airport,338,AS,JP,JP-46,Mishima-Mura,RJX7,,"30.784722, 130.270556"

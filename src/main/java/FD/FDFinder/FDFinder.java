@@ -1,9 +1,14 @@
-package FD;
+package FD.FDFinder;
 
+import FD.DifferenceSet.DifferenceSet;
+import FD.DifferenceSet.DifferenceSetBuilder;
+import FD.FDs.ApproxFDs;
 import FastADC.plishard.PliShard;
 import FastADC.plishard.PliShardBuilder;
 import de.metanome.algorithms.dcfinder.input.Input;
 import de.metanome.algorithms.dcfinder.input.RelationalInput;
+import FD.DataIO.DataIO;
+
 
 public class FDFinder {
 
@@ -31,10 +36,12 @@ public class FDFinder {
         dataFp = _dataFp;
         System.out.println("INPUT FILE: " + dataFp);
         System.out.println("ERROR THRESHOLD: " + threshold);
+        DataIO dataIO = new DataIO();
 
         // Pre-process: load input data
         long t00 = System.currentTimeMillis();
         input = new Input(new RelationalInput(dataFp), sizeLimit);
+        dataIO.configure(input.getHeaders());
         pliShardBuilder = new PliShardBuilder(shardLength, input.getParsedColumns());
         PliShard[] pliShards = pliShardBuilder.buildPliShards(input.getIntInput());
         long t_pre = System.currentTimeMillis() - t00;
@@ -45,10 +52,20 @@ public class FDFinder {
         differenceSetBuilder = new DifferenceSetBuilder();
         DifferenceSet differenceSet = differenceSetBuilder.build(pliShards, linear);
         long t_diff = System.currentTimeMillis() - t10;
+//        for(Difference difference : differenceSet.getDifferences())
+//            System.out.println(difference.getBitSet() + ":" + difference.getDifferenceValue());
         System.out.println(" [Difference] # of differences: " + differenceSet.size());
         System.out.println("[FDFinder] Build differenceSet time: " + t_diff + "ms");
 
         // approx difference inversion
+        long t20 = System.currentTimeMillis();
+        ApproximateFD approximateFD = new ApproximateFD(differenceSet, threshold);
+        ApproxFDs approxFDs = approximateFD.buildApproxFDs();
+        long t_FD = System.currentTimeMillis() - t20;
+        dataIO.transfer(approxFDs);
+        System.out.println("[FDs] # of FDs: " + approxFDs.getPartialFDs().size());
+        System.out.println("[FDs] builder time : " + t_FD +"ms");
+        
     }
 
 }

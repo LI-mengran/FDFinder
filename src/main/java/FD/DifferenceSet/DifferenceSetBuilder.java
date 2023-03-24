@@ -1,6 +1,9 @@
-package FD;
+package FD.DifferenceSet;
 
+import FD.util.Utils;
 import FastADC.plishard.PliShard;
+import ch.javasoft.bitset.IBitSet;
+import ch.javasoft.bitset.LongBitSet;
 import com.koloboke.collect.map.hash.HashLongLongMap;
 import com.koloboke.collect.map.hash.HashLongLongMaps;
 import com.koloboke.function.LongLongConsumer;
@@ -18,6 +21,7 @@ public class DifferenceSetBuilder {
         if (pliShards.length != 0) {
             fullDifferenceSet = linear ? linearBuildDifferenceSet(pliShards) : buildDifferenceSet(pliShards);
         }
+
         return fullDifferenceSet;
     }
 
@@ -44,11 +48,11 @@ public class DifferenceSetBuilder {
         }
 
         for (var entry : diffMap.entrySet()) {
-            differences.add(new Difference(entry.getKey(), entry.getValue()));
+            differences.add(new Difference(entry.getKey(), entry.getValue(), pliShards[0].plis.size()));
         }
 
 
-        return new DifferenceSet(differences);
+        return new DifferenceSet(differences, pliShards[0].plis.size());
     }
 
 
@@ -62,8 +66,10 @@ public class DifferenceSetBuilder {
         diffMap = rootTask.invoke();
 
         for (var entry : diffMap.entrySet()) {
-            differences.add(new Difference(entry.getKey(), entry.getValue()));
+            differences.add(new Difference(entry.getKey(), entry.getValue(),pliShards[0].plis.size()));
+//            System.out.println("BitSet: " + Utils.longToBitSet(pliShards[0].plis.size(),entry.getKey()) + "\n Long:" + entry.getKey() + "\n IBitset:" + new LongBitSet(Utils.longToBitSet(pliShards[0].plis.size(),entry.getKey())));
         }
-        return new DifferenceSet(differences);
+
+        return new DifferenceSet(differences,pliShards[0].plis.size());
     }
 }

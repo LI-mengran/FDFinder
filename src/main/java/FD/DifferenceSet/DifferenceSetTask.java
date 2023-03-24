@@ -1,4 +1,4 @@
-package FD;
+package FD.DifferenceSet;
 
 
 import FastADC.plishard.PliShard;
@@ -30,7 +30,9 @@ public class DifferenceSetTask extends CountedCompleter<HashLongLongMap> {
         pliShards = _pliShards;
         taskBeg = _beg;
         taskEnd = _end;
+        partialDiffMap = HashLongLongMaps.newMutableMap();
         buildSearchIndex(taskEnd);
+
     }
 
     @Override
@@ -58,10 +60,10 @@ public class DifferenceSetTask extends CountedCompleter<HashLongLongMap> {
                     SingleDiffMapBuilder singleDiffMapBuilder = new SingleDiffMapBuilder(pliShards[i]);
                     partialDiffMap = singleDiffMapBuilder.buildDiffMap();
                 }
-//                else{
-//                    CrossDiffMapBuilder crossDiffMapBuilder = new CrossDiffMapBuilder(pliShards[i], pliShards[j]);
-//                    partialDiffMap = crossDiffMapBuilder.buildDiffMap();
-//                }
+                else{
+                    CrossDiffMapBuilder crossDiffMapBuilder = new CrossDiffMapBuilder(pliShards[i], pliShards[j]);
+                    partialDiffMap = crossDiffMapBuilder.buildDiffMap();
+                }
 
             }
             tryComplete();

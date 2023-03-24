@@ -1,21 +1,33 @@
-package FD;
+package FD.DifferenceSet;
 
-import FastADC.evidence.evidenceSet.Evidence;
+import FD.util.Utils;
+import ch.javasoft.bitset.IBitSet;
 import ch.javasoft.bitset.LongBitSet;
+import jdk.jshell.execution.Util;
+
+import java.util.BitSet;
 
 public class Difference {
 
     public long count;
     long differenceValue;
-    public LongBitSet bitset;
+    public BitSet bitset;
+    int nAttributes;
+    IBitSet mask;
 
-    public Difference(long _differenceValue, long _count) {
+    public Difference(long _differenceValue, long _count, int _nAttributes) {
         differenceValue = _differenceValue;
         count = _count;
+        nAttributes = _nAttributes;
+        mask = new LongBitSet(nAttributes);
+        for(int index = 0; index < nAttributes; index ++)
+            mask.set(index);
     }
 
     public LongBitSet getBitSet() {
-        return bitset;
+
+        bitset = Utils.longToBitSet(nAttributes, differenceValue);
+        return new LongBitSet(bitset).getXor(mask);
     }
 
     public long getCount() {
@@ -33,5 +45,9 @@ public class Difference {
     @Override
     public int hashCode() {
         return (int) (differenceValue ^ (differenceValue >>> 32));
+    }
+
+    public long getDifferenceValue() {
+        return differenceValue;
     }
 }

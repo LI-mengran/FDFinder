@@ -1,4 +1,4 @@
-package FD;
+package FD.DifferenceSet;
 
 import FastADC.plishard.Pli;
 import FastADC.plishard.PliShard;
