@@ -26,4 +26,11 @@ public class DifferenceSet {
     public List<Difference> getDifferences() {
         return differences;
     }
+    public long getTotalcount(){
+        long count = 0;
+        for (Difference difference: differences){
+            count+=difference.getCount();
+        }
+        return count;
+    }
 }

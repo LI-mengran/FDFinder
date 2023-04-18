@@ -21,6 +21,7 @@ public class DataIO {
 
     public void transfer(ApproxFDs approxFDs){
         for(FD fd : approxFDs.getPartialFDs()){
+            if(fd == null)continue;
             BitSet lhs = fd.getLhs().toBitSet();
             BitSet rhs = fd.getRhs().toBitSet();
             List<String> lhsString = new ArrayList<>();

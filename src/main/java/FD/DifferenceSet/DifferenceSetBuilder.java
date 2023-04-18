@@ -33,18 +33,18 @@ public class DifferenceSetBuilder {
         LongLongConsumer add = (k, v) -> diffMap.addValue(k, v, 0L);
 
         for (int i = 0; i < pliShards.length; i++) {
-//            for (int j = i; j < pliShards.length; j++) {
+            for (int j = i; j < pliShards.length; j++) {
                 HashLongLongMap partialDiffMap;
-//                if(i == j){
+                if(i == j){
                     SingleDiffMapBuilder singleDiffMapBuilder = new SingleDiffMapBuilder(pliShards[i]);
                     partialDiffMap = singleDiffMapBuilder.buildDiffMap();
-//                }
-//                else{
-//                    CrossDiffMapBuilder crossDiffMapBuilder = new CrossDiffMapBuilder(pliShards[i], pliShards[j]);
-//                    partialDiffMap = crossDiffMapBuilder.buildDiffMap();
-//                }
+                }
+                else{
+                    CrossDiffMapBuilder crossDiffMapBuilder = new CrossDiffMapBuilder(pliShards[i], pliShards[j]);
+                    partialDiffMap = crossDiffMapBuilder.buildDiffMap();
+                }
                 partialDiffMap.forEach(add);
-//            }
+            }
         }
 
         for (var entry : diffMap.entrySet()) {
