@@ -16,8 +16,9 @@ public class test {
         int rowLimit = -1;              // limit the number of tuples in dataset, -1 means no limit
         int shardLength = 400;
         boolean linear = false;         // linear single-thread in DifferenceSetBuilder
+        int nAttribute = 0;
 
-        FDFinder fdFinder = new FDFinder(threshold, shardLength, linear);
+        FDFinder fdFinder = new FDFinder(threshold, shardLength, linear, nAttribute);
         fdFinder.buildApproxFDs(fp, rowLimit);
         System.out.println();
     }

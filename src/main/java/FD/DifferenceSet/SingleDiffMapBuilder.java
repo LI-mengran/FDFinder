@@ -18,7 +18,7 @@ public class SingleDiffMapBuilder {
         plis = shard.plis;
         tidBeg = shard.beg;
         tidRange = shard.end - shard.beg;
-        differenceCount = (tidRange + 1) * tidRange;
+        differenceCount = (tidRange - 1) * tidRange / 2;
         nAttributes = shard.plis.size();
     }
 
@@ -38,11 +38,13 @@ public class SingleDiffMapBuilder {
                     List<Integer> rawCluster = pliE.get(k).getRawCluster();
                     /** for every tuple in cluster*/
                     for(int i = 0; i < rawCluster.size() - 1; i++){
-                        int t1 = rawCluster.get(i) - tidBeg, r1 = t1 * tidRange;
+                        int t1 = rawCluster.get(i) - tidBeg;
                         for (int j = i + 1; j < rawCluster.size(); j++) {
-                            int t2 = rawCluster.get(j) - tidBeg, r2 = t2 * tidRange;
-                            int pos = Integer.min(r1 + t2,r2 + t1);  // (cluster.get(i)-tidBeg)*tidRange + (cluster.get(j)-tidBeg)
-                            differenceValues[pos] |= mask;                  // (cluster.get(j)-tidBeg)*tidRange + (cluster.get(i)-tidBeg)
+                            int t2 = rawCluster.get(j) - tidBeg;
+                            if(t1 == t2)   continue;
+                            int tMin = Integer.min(t1, t2), tMax = Integer.max(t1, t2);
+                            int pos = (tMax - 1) * tMax / 2 + tMin;
+                            differenceValues[pos] |= mask;                 // (cluster.get(j)-tidBeg)*tidRange + (cluster.get(i)-tidBeg)
                         }
                     }
                 }

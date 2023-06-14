@@ -11,7 +11,7 @@ public class Difference {
 
     public long count;
     long differenceValue;
-    public BitSet bitset;
+    BitSet bitset;
     int nAttributes;
     IBitSet mask;
 
@@ -24,8 +24,17 @@ public class Difference {
             mask.set(index);
     }
 
-    public LongBitSet getBitSet() {
+    public Difference(LongBitSet _bitset, long _count, int _nAttributes) {
+        bitset = _bitset.toBitSet();
+        count = _count;
+        nAttributes = _nAttributes;
+        mask = new LongBitSet(nAttributes);
+        for(int index = 0; index < nAttributes; index ++)
+            mask.set(index);
+    }
 
+    public LongBitSet getBitSet() {
+        if(bitset != null) return new LongBitSet(bitset);
         bitset = Utils.longToBitSet(nAttributes, differenceValue);
         return new LongBitSet(bitset).getXor(mask);
     }

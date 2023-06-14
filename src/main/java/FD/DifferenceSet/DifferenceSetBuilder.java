@@ -10,9 +10,12 @@ import com.koloboke.function.LongLongConsumer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class DifferenceSetBuilder {
     private DifferenceSet fullDifferenceSet;
+    private int nAttributes;
 
     public DifferenceSetBuilder(){}
 
@@ -24,7 +27,47 @@ public class DifferenceSetBuilder {
 
         return fullDifferenceSet;
     }
+    public DifferenceSetBuilder(int _nAttributes){
+        nAttributes = _nAttributes;
+    }
+    public DifferenceSet buildFromFile(String dsFilePath, int rowLimit){
+        List<Difference> differences = new ArrayList<>();
 
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(dsFilePath))) {
+            String s;
+            while ((s = br.readLine()) != null)
+                lines.add(s);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(rowLimit > 0){
+            String s;
+            for(int i = 0; i < rowLimit; i++){
+                s = lines.get(i);
+                int index = s.indexOf('}');
+                LongBitSet bitSet = new LongBitSet();
+                for (String str : s.substring(1, index).split(", ")) {
+                    if (str != null && str.length() > 0) bitSet.set(Integer.parseInt(str));
+                }
+                long count = Long.parseLong(s.substring(index + 2));
+                differences.add(new Difference(bitSet, count, nAttributes));
+            }
+        }
+        else{
+            for (String s : lines) {
+                int index = s.indexOf('}');
+                LongBitSet bitSet = new LongBitSet();
+                for (String str : s.substring(1, index).split(", ")) {
+                    if (str != null && str.length() > 0) bitSet.set(Integer.parseInt(str));
+                }
+                long count = Long.parseLong(s.substring(index + 2));
+                differences.add(new Difference(bitSet, count, nAttributes));
+            }
+        }
+        return new DifferenceSet(differences, nAttributes);
+    }
     private DifferenceSet linearBuildDifferenceSet(PliShard[] pliShards) {
 
         HashLongLongMap diffMap = HashLongLongMaps.newMutableMap();
